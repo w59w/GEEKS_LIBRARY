@@ -5,12 +5,16 @@ class Book(models.Model):
     objects = models.Manager()
     title = models.CharField(max_length=200)  # Название книги
     author = models.CharField(max_length=100)  # Автор книги
+    price = models.FloatField(default=0.0)  # Цена книги
+    stock = models.BooleanField(default=True)  # В наличии или нет
+    category = models.CharField(max_length=100, default='General')
     published_date = models.DateField()  # Дата публикации
     isbn = models.CharField(max_length=13, unique=True)  # ISBN
     pages = models.PositiveIntegerField()  # Количество страниц
     cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)  # Обложка книги
     description = models.TextField()  # Описание книги
     hashtags = models.CharField(max_length=255, blank=True, null=True)  # Хэштеги
+
 
     def __str__(self):
         return self.title
