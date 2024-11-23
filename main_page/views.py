@@ -1,24 +1,39 @@
-from django.http import HttpResponse
-from datetime import datetime
+from django.shortcuts import render, get_object_or_404
+from django.db import models
+from .models import Book
+from .forms import CommentForm
 
 
 def home(request):
-    return HttpResponse("Добро пожаловать на главную страницу!")
+    return render(request, 'main_page/home.html')
 
 
-def about_me(request):
-    return HttpResponse("Меня зовут Кумушай. Я программист и увлекаюсь искусственным интеллектом.")
+def book_list(request):
+    hashtag = request.GET.get('hashtag')
+    if hashtag:
+        books = Book.objects.filter(hashtags__icontains=hashtag)
+    else:
+        books = Book.objects.all()
+    return render(request, 'main_page/book_list.html', {'books': books})
 
 
-def about_my_pets(request):
-    html_content = """
-    <h1>Мой питомец</h1>
-    <p>Имя: Барсик</p>
-    <img src="https://example.com/path/to/your/cat/image.jpg" alt="Фото моего питомца" width="300">
-    """
-    return HttpResponse(html_content)
+def book_detail(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    comments = book.comments.all().order_by('-created_at')[:5]
+    average_rating = comments.aggregate(models.Avg('rating'))['rating__avg']
 
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.book = book
+            comment.save()
+    else:
+        form = CommentForm()
 
-def system_time(request):
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return HttpResponse(f"Текущая дата и время: {current_time}")
+    return render(request, 'main_page/book_detail.html', {
+        'book': book,
+        'comments': comments,
+        'form': form,
+        'average_rating': average_rating
+    })

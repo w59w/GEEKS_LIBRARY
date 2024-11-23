@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список заказов</title>
+</head>
+<body>
+    {% include 'main_page/header.html' %}
+
+    <h1>Список заказов</h1>
+    <ul>
+        {% for order in orders %}
+            <li>
+                {{ order.name }} заказал "{{ order.book.title }}", телефон: {{ order.phone_number }}
+                <a href="{% url 'edit_order' order.pk %}">Редактировать</a>
+                <a href="{% url 'delete_order' order.pk %}">Удалить</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_order' %}">Создать новый заказ</a>
+
+    {% include 'main_page/footer.html' %}
+</body>
+</html>

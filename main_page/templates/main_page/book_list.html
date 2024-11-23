@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список книг</title>
+</head>
+<body>
+    {% include 'main_page/header.html' %}
+    <h1>Список книг</h1>
+    <div>
+        <a href="?hashtag=#литература">#старики</a>
+        <a href="?hashtag=#дляподростков">#молодые</a>
+        <a href="?hashtag=#детская">#дети</a>
+    </div>
+    <ul>
+        {% for book in books %}
+            <li>
+                <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a> - {{ book.author }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% include 'main_page/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ book.title }}</title>
+</head>
+<body>
+    {% include 'main_page/header.html' %}
+    <h1>{{ book.title }}</h1>
+    <p><strong>Автор:</strong> {{ book.author }}</p>
+    <p><strong>Дата публикации:</strong> {{ book.published_date }}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Количество страниц:</strong> {{ book.pages }}</p>
+    <p><strong>Описание:</strong> {{ book.description }}</p>
+    {% if book.cover_image %}
+        <img src="{{ book.cover_image.url }}" alt="Обложка книги">
+    {% endif %}
+
+    <h2>Комментарии:</h2>
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user_name }}</strong> ({{ comment.created_at|date:"d.m.Y H:i" }}):<br>
+                {{ comment.text }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Добавить комментарий:</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+    <h3>Средний рейтинг последних 5 комментариев: {{ average_rating|default:"Нет рейтинга" }}</h3>
+    {% include 'main_page/footer.html' %}
+</body>
+</html>
