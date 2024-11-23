@@ -5,19 +5,33 @@
 </head>
 <body>
     {% include 'main_page/header.html' %}
+
     <h1>Список книг</h1>
+
+    <!-- Хэштеги для фильтрации -->
     <div>
-        <a href="?hashtag=#литература">#старики</a>
-        <a href="?hashtag=#дляподростков">#молодые</a>
-        <a href="?hashtag=#детская">#дети</a>
+        <a href="?hashtag=литература">#старики</a>
+        <a href="?hashtag=дляподростков">#молодежь</a>
+        <a href="?hashtag=детская">#дети</a>
     </div>
+
+    <!-- Форма поиска -->
+    <form method="get" action="{% url 'book_list' %}">
+        <input type="text" name="q" placeholder="Введите название книги" value="{{ request.GET.q }}">
+        <button type="submit">Искать</button>
+    </form>
+
+    <!-- Список книг -->
     <ul>
         {% for book in books %}
             <li>
                 <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a> - {{ book.author }}
             </li>
+        {% empty %}
+            <li>Книги не найдены</li>
         {% endfor %}
     </ul>
+
     {% include 'main_page/footer.html' %}
 </body>
 </html>
